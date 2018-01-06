@@ -15,7 +15,6 @@
       SEE_TASK: 'SEE_TASK',
       OPEN_MODAL: 'OPEN_MODAL',
       CLOSE_MODAL: 'CLOSE_MODAL',
-      UPDATE_TASK: 'UPDATE_TASK',
       REMOVE_TASK: 'REMOVE_TASK',
     },
 
@@ -24,6 +23,7 @@
      */
     loadTask: function(data){
       this.todos = data;
+      console.log(this.todos);
       $(this).trigger(this.events.LOAD_TASK);
     },
 
@@ -32,6 +32,8 @@
      * @param {object} 追加されるタスク
      */
     addTask: function(obj){
+      this.todos.push(obj);
+      console.log(this.todos);
       $(this).trigger(this.events.ADD_TASK, obj);      
     },
 
@@ -44,6 +46,8 @@
      * @param {number} 削除されるタスクのインデックス
      */
     removeTask: function(n){
+      this.todos.splice(n, 1);
+      console.log(this.todos);
       $(this).trigger(this.events.REMOVE_TASK, n);
     },
 
@@ -144,7 +148,7 @@
     addTask: function(obj){
       let me = this;
 
-      const _desc = $('<p>').text(obj.desc);
+      const _desc = $('<p>').text(obj.description);
       const _date = $('<p>').text(obj.date);
 
       const _header = $('<div>').addClass('mdl-list__item-primary-content');
@@ -283,12 +287,15 @@
         }
       });
 
+      // モーダル閉じる
       $('.js-modal--close').on('click', function(){
+        if(!$('#todo__title').val() || !$('#todo__desc').val()) return;
         Model.closeModal();
       });
 
       // ADDボタンをクリックすると、フィールドの値を取得してモデルにタスク追加を伝搬      
       $('.js-btn--submit').on('click', function(){
+        if(!$('#todo__title').val() || !$('#todo__desc').val()) return;
 
         /**
          * 日付フォーマットに変換
@@ -306,7 +313,7 @@
         let _obj = {
           title: $('#todo__title').val(),
           date: getNowYMD(),
-          desc: $('#todo__desc').val()
+          description: $('#todo__desc').val()
         };
         Model.addTask(_obj);
       });
